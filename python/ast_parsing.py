@@ -1,6 +1,13 @@
 import ast
 import os
 
+class ExampleVisitor(ast.NodeVisitor):
+    def __init__(self):
+        self.has_raw_sql = False
+
+    def visit_Call(self, node):
+        print(node)
+
 class RawSQLVisitor(ast.NodeVisitor):
     def __init__(self):
         self.has_raw_sql = False
@@ -38,7 +45,10 @@ code = get_contents(path)
 
 
 tree = ast.parse(code)
-visitor = RawSQLVisitor()
-visitor.visit(tree)
+visitors = [ExampleVisitor(), RawSQLVisitor()]
+
+for VisitorClass in visitors:
+    visitor = VisitorClass
+    visitor.visit(tree)
 
 print(visitor.has_raw_sql)
